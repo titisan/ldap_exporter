@@ -121,11 +121,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
         if (yamlConfig.containsKey("password")) {
           cfg.password = (String)yamlConfig.get("password");
         }
-
-        if (yamlConfig.containsKey("ssl")) {
-          cfg.ssl = (Boolean)yamlConfig.get("ssl");
-        }
-        
+      
         if (yamlConfig.containsKey("lowercaseOutputName")) {
           cfg.lowercaseOutputName = (Boolean)yamlConfig.get("lowercaseOutputName");
         }
@@ -240,9 +236,6 @@ public class LdapCollector extends Collector implements Collector.Describable {
         if (config.lowercaseOutputName) {
           fullname = fullname.toLowerCase();
         }
-/*         LOGGER.fine("add metric sample, Name: " + fullname + 
-                    " Value: " + value.doubleValue() + 
-                    " help: " + help); */
         addSample(new MetricFamilySamples.Sample(fullname, new ArrayList<String>(), new ArrayList<String>(), value.doubleValue()), type, help);
       }
 
@@ -352,7 +345,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
       }
 
       Receiver receiver = new Receiver();
-      LdapScraper scraper = new LdapScraper(config.ldapUrl, config.username, config.password, config.ssl, config.whitelistEntryNames, config.blacklistEntryNames, receiver);
+      LdapScraper scraper = new LdapScraper(config.ldapUrl, config.username, config.password, config.whitelistEntryNames, config.blacklistEntryNames, receiver);
       long start = System.nanoTime();
       double error = 0;
       if ((config.startDelaySeconds > 0) &&
@@ -392,13 +385,12 @@ public class LdapCollector extends Collector implements Collector.Describable {
      * Convenience function to run standalone.
      */
     public static void main(String[] args) throws Exception {
-      String ldapUrl = "";
+      String ldapUrl = "ldap://127.0.0.1:389";
       if (args.length > 0) {
         ldapUrl = args[0];
       }
-      LdapCollector lc = new LdapCollector(("{"
-      + "`ldapUrl`: `" + ldapUrl + "`,"
-      + "}").replace('`', '"'));
+      LdapCollector lc = new LdapCollector("\n---\nldapUrl: " + ldapUrl);
+      
       for(MetricFamilySamples mfs : lc.collect()) {
         System.out.println(mfs);
       }

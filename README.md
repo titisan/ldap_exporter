@@ -23,7 +23,6 @@ startDelaySeconds: 0
 ldapUrl: ldap://127.0.0.1:1234
 userName: cn=Directory Manager
 password: password
-ssl: false
 lowercaseOutputName: false
 lowercaseOutputLabelNames: false
 whitelistObjectNames: ["entryDN=cn=Current,cn=Connections,cn=Monitor"]
@@ -44,7 +43,7 @@ startDelaySeconds | start delay before serving requests. Any requests within the
 ldapUrl  | The full LDAP URL of the LDAP directory server to connect to.
 username | The username to be used in LDAP authentication.
 password | The password to be used in LDAP authentication.
-ssl      | Whether the connection should be done over SSL. To configure certificates you have to set following system properties:<br/>`-Djavax.net.ssl.keyStore=/home/user/.keystore`<br/>`-Djavax.net.ssl.keyStorePassword=changeit`<br/>`-Djavax.net.ssl.trustStore=/home/user/.truststore`<br/>`-Djavax.net.ssl.trustStorePassword=changeit` (Not supported yet)
+properties:<br/>`-Djavax.net.ssl.keyStore=/home/user/.keystore`<br/>`-Djavax.net.ssl.keyStorePassword=changeit`<br/>`-Djavax.net.ssl.trustStore=/home/user/.truststore`<br/>`-Djavax.net.ssl.trustStorePassword=changeit` (Not supported yet)
 lowercaseOutputName | Lowercase the output metric name. Applies to default format and `name`. Defaults to false.
 lowercaseOutputLabelNames | Lowercase the output metric label names. Applies to default format and `labels`. Defaults to false.
 whitelistEntryNames | A list of [LDAP attributes](https://tools.ietf.org/html/rfc4512#section-2.5) to query. The list is used in the LDAP search filter. Defaults to all "(objectClass=*)".

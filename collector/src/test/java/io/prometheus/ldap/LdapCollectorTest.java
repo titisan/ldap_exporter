@@ -1,7 +1,6 @@
 package io.prometheus.ldap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -10,14 +9,12 @@ import org.junit.AfterClass;
 
 import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Collector.MetricFamilySamples;
 
 import org.junit.BeforeClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.logging.Logger;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.io.File;
 
@@ -44,7 +41,6 @@ public class LdapCollectorTest {
     private static void startLDAPServer() throws Exception {
         InMemoryDirectoryServerConfig serverConfig = new InMemoryDirectoryServerConfig("cn=Monitor");
         serverConfig.addAdditionalBindCredentials("cn=Directory Manager", "password");
-        //serverConfig.setLDAPDebugLogHandler(logger.getHandlers()[0]);
         // Do not set any schema
         serverConfig.setSchema(null);
         serverConfig.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("nonEncrypted389", 389));
