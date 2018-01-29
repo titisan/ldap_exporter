@@ -22,3 +22,4 @@ target/
 .settings/
 .classpath
 dependency-reduced-pom.xml
+.vscode/settings.json

@@ -14,7 +14,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.regex.PatternSyntaxException;
 import javax.management.MalformedObjectNameException;
 
 import org.yaml.snakeyaml.Yaml;
@@ -50,7 +50,6 @@ public class LdapCollector extends Collector implements Collector.Describable {
       String ldapUrl = "ldap://127.0.0.1:389"; //default ldap URL if not provided
       String username = "";
       String password = "";
-      boolean ssl = false;
       boolean lowercaseOutputName;
       boolean lowercaseOutputLabelNames;
       List<String> whitelistEntryNames = new ArrayList<String>();
@@ -149,9 +148,16 @@ public class LdapCollector extends Collector implements Collector.Describable {
           for (Map<String, Object> ruleObject : configRules) {
             Map<String, Object> yamlRule = ruleObject;
             Rule rule = new Rule();
-            cfg.rules.add(rule);
+
             if (yamlRule.containsKey("pattern")) {
-              rule.pattern = Pattern.compile("^.*(?:" + (String)yamlRule.get("pattern") + ").*$");
+              try {
+                rule.pattern = Pattern.compile((String)yamlRule.get("pattern"));
+              } catch (PatternSyntaxException e) {
+                // ignore this rule if wrong pattern
+                LOGGER.warning("Ignoring wrong patern: " + (String)yamlRule.get("pattern")  + " Error: " + e.toString());
+                continue;
+              }
+              
             }
             if (yamlRule.containsKey("name")) {
               rule.name = (String)yamlRule.get("name");
@@ -190,6 +196,8 @@ public class LdapCollector extends Collector implements Collector.Describable {
             if (rule.name != null && rule.pattern == null) {
               throw new IllegalArgumentException("Must provide pattern, if name is given: " + yamlRule);
             }
+            // Add the rule to the configured rule (only after the validations are done)
+            cfg.rules.add(rule);
           }
         } else {
           // Default to a single default rule.
@@ -236,7 +244,11 @@ public class LdapCollector extends Collector implements Collector.Describable {
         if (config.lowercaseOutputName) {
           fullname = fullname.toLowerCase();
         }
-        addSample(new MetricFamilySamples.Sample(fullname, new ArrayList<String>(), new ArrayList<String>(), value.doubleValue()), type, help);
+         // Add to samples.
+         LOGGER.fine("add metric sample, Name: " + fullname + 
+         " Value: " + value.doubleValue() + 
+         " help: " + help);
+         addSample(new MetricFamilySamples.Sample(fullname, new ArrayList<String>(), new ArrayList<String>(), value.doubleValue()), type, help);
       }
 
       public void recordLdapEntry(
@@ -253,7 +265,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
             matcher = rule.pattern.matcher(entryName);
             if (!matcher.matches()) {
               continue;
-            }
+            } 
           }
 
           Number value;
@@ -285,7 +297,6 @@ public class LdapCollector extends Collector implements Collector.Describable {
 
           // Matcher is set below here due to validation in the constructor.
           String name = safeName(matcher.replaceAll(rule.name));
-          //LOGGER.fine("Name after applying rule is: " + name);
           if (name.isEmpty()) {
             return;
           }

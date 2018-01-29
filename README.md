@@ -2,14 +2,12 @@ LDAP Exporter
 =====
 
 LDAP to Prometheus exporter: a collector that can configurably scrape and expose metrics from a LDAP directory server.
-The LDAP exporter only scrapes `monitorCounter`, `monitorOpInitiated` and `monitorOpCompleted` attributes.
 
 This exporter is intended to be run as an independent HTTP server and scrape remote LDAP targets.
 
-
 ## Running
 
-Execute `./run_ldapexporter.sh` 
+Execute `./run_ldapexporter.sh <[hostname:]port> [<yaml configuration file>]` 
 
 ## Building
 
@@ -40,10 +38,9 @@ rules:
 Name     | Description
 ---------|------------
 startDelaySeconds | start delay before serving requests. Any requests within the delay period will result in an empty metrics set.
-ldapUrl  | The full LDAP URL of the LDAP directory server to connect to.
+ldapUrl  | The full LDAP URL of the LDAP directory server to connect to. Defaults to 'ldap://127.0.0.1:389'
 username | The username to be used in LDAP authentication.
 password | The password to be used in LDAP authentication.
-properties:<br/>`-Djavax.net.ssl.keyStore=/home/user/.keystore`<br/>`-Djavax.net.ssl.keyStorePassword=changeit`<br/>`-Djavax.net.ssl.trustStore=/home/user/.truststore`<br/>`-Djavax.net.ssl.trustStorePassword=changeit` (Not supported yet)
 lowercaseOutputName | Lowercase the output metric name. Applies to default format and `name`. Defaults to false.
 lowercaseOutputLabelNames | Lowercase the output metric label names. Applies to default format and `labels`. Defaults to false.
 whitelistEntryNames | A list of [LDAP attributes](https://tools.ietf.org/html/rfc4512#section-2.5) to query. The list is used in the LDAP search filter. Defaults to all "(objectClass=*)".
@@ -58,15 +55,14 @@ help     | Help text for the metric. Capture groups from `pattern` can be used. 
 type     | The type of the metric, can be `GAUGE`, `COUNTER` or `UNTYPED`. `name` must be set to use this. Defaults to `UNTYPED`.
 
 Metric names and label names are sanitized. All characters other than `[a-zA-Z0-9:_]` are replaced with underscores,
-and adjacent underscores are collapsed. There's no limitations on label values or the help text.
+and adjacent underscores are collapsed, the pattern `,*cn=` is replaced by underscores. There's no limitations on label values or the help text.
 
-A minimal config is `{}`, which will connect using anonymous authentication to 127.0.0.1:389 and collect everything in the default format.
+A minimal config is `---`, which will connect using anonymous authentication to ldap://127.0.0.1:389 and collect everything in the default format.
 
 ### Pattern input
 The format of the input matches against the pattern is "LDAP entry Dn[_attrname]"
 
-When the LDAP entry contains more than one of these attributes `monitorCounter`, `monitorOpInitiated` and `monitorOpCompleted` the 
-attribute name is appended to the LDAP entry name. 
+When the LDAP entry contains more than one of these attributes `monitorCounter`, `monitorOpInitiated`, `monitorOpCompleted` and `monitoredInfo` the attribute name is appended to the LDAP entry name. 
 
 Examples:
 ```

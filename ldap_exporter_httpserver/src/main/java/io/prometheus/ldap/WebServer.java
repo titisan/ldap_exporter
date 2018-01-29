@@ -9,8 +9,8 @@ import io.prometheus.client.exporter.HTTPServer;
 public class WebServer {
 
    public static void main(String[] args) throws Exception {
-     if (args.length < 2) {
-       System.err.println("Usage: WebServer <[hostname:]port> <yaml configuration file>");
+     if (args.length < 1) {
+       System.err.println("Usage: WebServer <[hostname:]port> [<yaml configuration file>]");
        System.exit(1);
      }
 
@@ -26,7 +26,13 @@ public class WebServer {
        socket = new InetSocketAddress(port);
      }
 
-     new LdapCollector(new File(args[1])).register();
+     if (args.length == 2) {
+      new LdapCollector(new File(args[1])).register();
+     } else {
+      new LdapCollector("---").register();
+     }
+
+     
      new HTTPServer(socket, CollectorRegistry.defaultRegistry);
    }
 }

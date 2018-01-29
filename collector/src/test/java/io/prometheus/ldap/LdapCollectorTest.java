@@ -5,23 +5,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.junit.AfterClass;
-
-import io.prometheus.client.Collector;
-import io.prometheus.client.CollectorRegistry;
-
-import org.junit.BeforeClass;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
 import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldif.LDIFReader;
+
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import io.prometheus.client.Collector;
+import io.prometheus.client.CollectorRegistry;
 
 /**
  * Unit test for simple LdapCollectorTest.
@@ -43,7 +42,8 @@ public class LdapCollectorTest {
         serverConfig.addAdditionalBindCredentials("cn=Directory Manager", "password");
         // Do not set any schema
         serverConfig.setSchema(null);
-        serverConfig.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("nonEncrypted389", 389));
+        serverConfig.setListenerConfigs(
+            InMemoryListenerConfig.createLDAPConfig("nonEncrypted389", 389));
         server = new InMemoryDirectoryServer(serverConfig);
 
         // Populate data in the cn=Monitor.
@@ -179,17 +179,25 @@ public class LdapCollectorTest {
     @Test
     public void stopsOnFirstMatchingRule() throws Exception {
         LdapCollector lc = new LdapCollector(
-              "\n---\nrules:\n- pattern: `.*`\n  name: foo\n- pattern: `.*`\n  name: bar".replace('`','"')).register(registry);
-      assertNotNull(registry.getSampleValue("foo", new String[]{}, new String[]{}));
-      assertNull(registry.getSampleValue("bar", new String[]{}, new String[]{}));
+              "\n---\nrules:\n- pattern: `.+`\n  name: foo\n- pattern: `.+`\n  name: bar".replace('`','"')).register(registry);
+      assertNotNull(registry.getSampleValue("foo"));
+      assertNull(registry.getSampleValue("bar"));
     }
 
     @Test
     public void stopsOnEmptyName() throws Exception {
         LdapCollector lc = new LdapCollector(
               "\n---\nrules:\n- pattern: `.*`\n  name: ''\n- pattern: `.*`\n  name: foo".replace('`','"')).register(registry);
-      assertNull(registry.getSampleValue("foo", new String[]{}, new String[]{}));
+      assertNull(registry.getSampleValue("foo"));
     }
+
+    @Test
+    public void ignoreWrongRule() throws Exception {
+        LdapCollector lc = new LdapCollector(
+              "\n---\nrules:\n- pattern: `cn=(*)`\n  name: foo\n- pattern: `.+`\n  name: bar".replace('`','"')).register(registry);
+      assertNull(registry.getSampleValue("foo"));
+      assertNotNull(registry.getSampleValue("bar"));
+    }    
 
     @Test
     public void defaultExportTest() throws Exception {
@@ -205,6 +213,11 @@ public class LdapCollectorTest {
 
         // Test 'cn=Entries,cn=Statistics'
         assertEquals(19858576, registry.getSampleValue("_Entries_Statistics"), .001);
+
+        // Test 'cn=Backend 1,cn=Backends,cn=Monitor'
+        assertNull(registry.getSampleValue("_Backend_1_Backends"));
+        // Test 'cn=Max,cn=Threads,cn=Monitor'
+        assertEquals(16.0, registry.getSampleValue("_Max_Threads"), .001);
     }
 
     @Test

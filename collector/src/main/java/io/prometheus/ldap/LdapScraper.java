@@ -18,7 +18,7 @@ import javax.naming.directory.SearchResult;
 
 
 public class LdapScraper {
-    private static final String[] attributesToReturn= {"monitorCounter", "monitorOpInitiated", "monitorOpCompleted"};
+    private static final String[] attributesToReturn= {"monitorCounter", "monitorOpInitiated", "monitorOpCompleted", "monitoredInfo"};
     private static final String baseDn = "cn=Monitor";
     private static final Logger logger = Logger.getLogger(LdapScraper.class.getName());;
     
@@ -34,7 +34,6 @@ public class LdapScraper {
     private String ldapUrl;
     private String username;
     private String password;
-    private boolean ssl;
     private List<String> whitelistEntryNames, blacklistEntryNames;
 
     public LdapScraper(String ldapUrl, String username, String password, List<String> whitelistEntryNames, List<String> blacklistEntryNames, LdapReceiver receiver) {
@@ -125,13 +124,16 @@ public class LdapScraper {
                     // There might be entries in the result set that do not contain any of the attributes to return 
                     if (Arrays.asList(attributesToReturn).contains(attr.getID())) {
                         String entryName = attrs.size() == 1 ? sr.getName() : sr.getName() + "_" + attr.getID();
-                        receiver.recordLdapEntry(entryName, Double.parseDouble((String)attr.get()), attr.getID(), sr.getName() + "_"  + attr.getID());
-                         logger.log(Level.FINE, "LDAP entry info: DN:" + entryName + 
-                                                " attr. name: " + attr.getID() + 
-                                                " value: " + attr.get().toString()); 
-    
-                    }
+                        try {
+                           Double value = Double.valueOf((String)attr.get());
+                           receiver.recordLdapEntry(entryName, value, attr.getID(), sr.getName() + "_"  + attr.getID());
+                           logger.log(Level.FINE, "LDAP entry info: DN:" + entryName + 
+                                                   " attr. name: " + attr.getID() + 
+                                                   " value: " + attr.get().toString()); 
+                        } catch (NumberFormatException numformatexcep) {
 
+                        }
+                    }
                 }
                 num_entries += 1;
             }
