@@ -4,11 +4,12 @@
 
   <groupId>com.github.titisan</groupId>
   <artifactId>parent</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <description>
     See https://github.com/titisan/ldap_exporter
   </description>
   <url>https://github.com/titisan/ldap_exporter</url>
+  <name>parent</name>
 
   <modules>
     <module>ldapcollector</module>
@@ -51,7 +52,18 @@
 
   <build>
       <plugins>
-          <plugin>
+         <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.7</version>
+            <extensions>true</extensions>
+            <configuration>
+               <serverId>ossrh</serverId>
+               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+               <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+         </plugin>
+<!--           <plugin>
               <artifactId>maven-release-plugin</artifactId>
               <groupId>org.apache.maven.plugins</groupId>
               <version>2.5</version>
@@ -61,7 +73,7 @@
                 <releaseProfiles>release</releaseProfiles>
                 <goals>deploy</goals>
               </configuration>
-          </plugin>
+          </plugin> -->
           <plugin>
               <artifactId>maven-deploy-plugin</artifactId>
               <groupId>org.apache.maven.plugins</groupId>
@@ -78,25 +90,7 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <version>2.15</version>
           </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.8</version>
-              <configuration>
-                  <encoding>UTF-8</encoding>
-                  <docencoding>UTF-8</docencoding>
-                  <linksource>true</linksource>
-              </configuration>
-              <executions>
-                  <execution>
-                      <id>generate-javadoc-site-report</id>
-                      <phase>site</phase>
-                      <goals>
-                          <goal>javadoc</goal>
-                      </goals>
-                  </execution>
-              </executions>
-          </plugin>
+
       </plugins>
   </build>
 
@@ -132,6 +126,24 @@
                           </execution>
                       </executions>
                   </plugin>
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-javadoc-plugin</artifactId>
+                     <version>2.9.1</version>
+                     <configuration>
+                           <encoding>UTF-8</encoding>
+                           <docencoding>UTF-8</docencoding>
+                           <linksource>true</linksource>
+                     </configuration>
+                     <executions>
+                           <execution>
+                              <id>attach-javadocs</id>
+                              <goals>
+                                 <goal>jar</goal>
+                              </goals>
+                           </execution>
+                        </executions>
+                  </plugin>                  
               </plugins>
           </build>
       </profile>
