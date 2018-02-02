@@ -2,20 +2,19 @@
   <packaging>pom</packaging>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.prometheus.ldap</groupId>
+  <groupId>com.github.titisan</groupId>
   <artifactId>parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <description>
-    
+    See https://github.com/titisan/ldap_exporter
   </description>
-  <url></url>
+  <url>https://github.com/titisan/ldap_exporter</url>
 
   <modules>
-    <module>collector</module>
+    <module>ldapcollector</module>
     <module>ldap_exporter_httpserver</module>
   </modules>
 
-<!--
   <distributionManagement>
       <snapshotRepository>
           <id>ossrh</id>
@@ -26,7 +25,7 @@
           <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
   </distributionManagement>
--->
+
   <licenses>
       <license>
           <name>The Apache Software License, Version 2.0</name>
@@ -34,14 +33,22 @@
           <distribution>repo</distribution>
       </license>
   </licenses>
-<!--
+
+  <developers>
+    <developer>
+      <email>titisan@gmail.com</email>
+      <organization>Titisan</organization>
+      <organizationUrl>https://github.com/titisan/ldap_exporter</organizationUrl>
+    </developer>
+  </developers>
+
   <scm>
-      <connection>scm:git:git@github.com:prometheus/jmx_exporter.git</connection>
-      <developerConnection>scm:git:git@github.com:prometheus/jmx_exporter.git</developerConnection>
-      <url>git@github.com:prometheus/jmx_exporter.git</url>
+      <connection>scm:git:git@github.com:titisan/ldap_exporter.git</connection>
+      <developerConnection>scm:git:git@github.com:titisan/ldap_exporter.git</developerConnection>
+      <url>git@github.com:titisan/ldap_exporter.git</url>
       <tag>HEAD</tag>
   </scm>
--->
+
   <build>
       <plugins>
           <plugin>
@@ -71,7 +78,6 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <version>2.15</version>
           </plugin>
-<!--
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
@@ -91,7 +97,6 @@
                   </execution>
               </executions>
           </plugin>
--->		  
       </plugins>
   </build>
 
@@ -100,8 +105,7 @@
           <id>release</id>
           <build>
               <plugins>
-<!--
-			  <plugin>
+			         <plugin>
                       <groupId>org.apache.maven.plugins</groupId>
                       <artifactId>maven-gpg-plugin</artifactId>
                       <version>1.5</version>
@@ -115,7 +119,6 @@
                           </execution>
                       </executions>
                   </plugin>
--->				  
                   <plugin>
                       <groupId>org.apache.maven.plugins</groupId>
                       <artifactId>maven-source-plugin</artifactId>
@@ -129,21 +132,6 @@
                           </execution>
                       </executions>
                   </plugin>
-<!--
-                  <plugin>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-javadoc-plugin</artifactId>
-                      <version>2.9.1</version>
-                      <executions>
-                          <execution>
-                              <id>attach-javadocs</id>
-                              <goals>
-                                  <goal>jar</goal>
-                              </goals>
-                          </execution>
-                      </executions>
-                  </plugin>
--->				  
               </plugins>
           </build>
       </profile>

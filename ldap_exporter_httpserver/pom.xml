@@ -2,20 +2,21 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.prometheus.ldap</groupId>
+    <groupId>com.github.titisan</groupId>
     <artifactId>parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>ldap_exporter_httpserver</artifactId>
+  <name>ldap_exporter_httpserver</name>
   <description>
-    
+    See https://github.com/titisan/ldap_exporter
   </description>
-  <url></url>
+  <url>https://github.com/titisan/ldap_exporter</url>
 
   <dependencies>
     <dependency>
-      <groupId>io.prometheus.ldap</groupId>
+      <groupId>com.github.titisan</groupId>
       <artifactId>ldapcollector</artifactId>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
@@ -46,7 +47,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>io.prometheus.ldap.WebServer</mainClass>
+              <mainClass>com.titisan.ldap.WebServer</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -63,57 +64,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- debian package builder 
-      <plugin>
-        <artifactId>jdeb</artifactId>
-        <groupId>org.vafer</groupId>
-        <version>1.0</version>
-
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>jdeb</goal>
-            </goals>
-            <configuration>
-              <dataSet>
-
-                <data>
-                  <src>${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar</src>
-                  <type>file</type>
-                  <mapper>
-                    <type>perm</type>
-                    <prefix>/usr/share/jmx_exporter</prefix>
-                    <filemode>644</filemode>
-                  </mapper>
-                </data>
-
-                <data>
-                  <src>${basedir}/src/deb/config</src>
-                  <type>directory</type>
-                  <mapper>
-                    <type>perm</type>
-                    <prefix>/etc/jmx_exporter</prefix>
-                  </mapper>
-                </data>
-
-                <data>
-                  <src>${basedir}/src/deb/bin/jmx_exporter</src>
-                  <type>file</type>
-                  <mapper>
-                    <type>perm</type>
-                    <prefix>/usr/bin</prefix>
-                    <filemode>755</filemode>
-                  </mapper>
-                </data>
-
-              </dataSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-	  -->
     </plugins>
   </build>
 
