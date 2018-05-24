@@ -23,8 +23,8 @@ userName: cn=Directory Manager
 password: password
 lowercaseOutputName: false
 lowercaseOutputLabelNames: false
-whitelistObjectNames: ["entryDN=cn=Current,cn=Connections,cn=Monitor"]
-blacklistObjectNames: ["entryDN=cn=Total,cn=Connections,cn=Monitor"]
+whitelistEntryNames: ["entryDN=cn=Current,cn=Connections,cn=Monitor"]
+blacklistEntryNames: ["entryDN=cn=Total,cn=Connections,cn=Monitor"]
 rules:
   - pattern: 'cn=Bytes,cn=Statistics,cn=Monitor'
     name: num_bytes
