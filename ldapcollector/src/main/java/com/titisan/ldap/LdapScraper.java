@@ -9,10 +9,11 @@ import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
+import javax.naming.ldap.Control;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -51,20 +52,22 @@ public class LdapScraper {
       * Values are passed to the receiver in a single thread.
       */
     public void doScrape() throws Exception {
-        DirContext dirConn = null;
+        LdapContext dirConn = null;
         try {
             Hashtable<String,Object> environment = new Hashtable<String,Object>();
             environment.put(Context.PROVIDER_URL, ldapUrl);
             environment.put(Context.REFERRAL, "ignore");
             environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+            environment.put("com.sun.jndi.ldap.connect.timeout", "5000");
             environment.put("java.naming.ldap.version", "3");
             if (username != null && username.length() != 0 && password != null && password.length() != 0) {
                 environment.put(Context.SECURITY_AUTHENTICATION, "simple");
                 environment.put(Context.SECURITY_PRINCIPAL, username);
                 environment.put(Context.SECURITY_CREDENTIALS, password);
             }
-
-            dirConn = new InitialDirContext(environment);
+            Control[] connCtls = new Control[0];
+            dirConn = new InitialLdapContext(environment, connCtls);
+            dirConn.reconnect(connCtls);
             SearchControls ctls = new SearchControls();
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             ctls.setReturningAttributes(attributesToReturn);
