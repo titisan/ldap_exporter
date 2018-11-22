@@ -50,9 +50,11 @@ public class LdapCollectorTest {
 
         // Populate data in the cn=Monitor.
         log("Populating CN Monitor data from LDIF file.");
-	    File ldifFile = new File(LdapCollectorTest.class.getClassLoader().getResource("cnMonitorTestData.ldif").getFile());
-
-        server.importFromLDIF(true, new LDIFReader(ldifFile));
+        File ldifFile = new File(LdapCollectorTest.class.getClassLoader().getResource("cnMonitorTestData.ldif").getFile());
+               
+        int numEntriesRead = server.importFromLDIF(true, new LDIFReader(ldifFile));
+        log("Number of entries imported from LDIF: " + numEntriesRead);
+        
         server.startListening();
     }
 
@@ -73,7 +75,7 @@ public class LdapCollectorTest {
     public void setUp() throws Exception {
       registry = new CollectorRegistry();
     }
-
+/*
     @Test(expected=IllegalArgumentException.class)
     public void testRulesMustHaveNameWithHelp() throws Exception {
         LdapCollector lc = new LdapCollector("---\nrules:\n- help: foo");
@@ -123,6 +125,25 @@ public class LdapCollectorTest {
               "\n---\nldapUrl: ldap://127.0.0.1:389\nusername: cn=Directory Manager\npassword: password\nrules:\n- pattern: `cn=Total,cn=Connections`\n  name: connections_total".replace('`','"')).register(registry);
       assertEquals(15931071, registry.getSampleValue("connections_total", new String[]{}, new String[]{}), .001);
     }    
+
+    @Test
+    public void testLdapWrongBaseDN() throws Exception {
+      LdapCollector lc = new LdapCollector(
+         "\n---\nldapUrl: ldap://127.0.0.1:389\nusername: cn=Directory Manager\npassword: password\nbaseDN: cn=WrongMonitor\nrules:\n- pattern: `cn=Total,cn=Connections`\n  name: connections_total".replace('`','"')).register(registry);
+        assertEquals(1.0, registry.getSampleValue("ldap_scrape_error"), .001);
+    }
+
+    @Test
+    public void testLdapBaseDN() throws Exception {
+      LdapCollector lc = new LdapCollector(
+         "\n---\nldapUrl: ldap://127.0.0.1:389\nusername: cn=Directory Manager\npassword: password\nbaseDN: cn=Connections,cn=Monitor\n").register(registry);
+        
+         // Test 'cn=Max File Descriptors,cn=Connections,cn=Monitor'
+        assertEquals(4096.0, registry.getSampleValue("_Max_File_Descriptors"), .001);
+        
+        // Test 'cn=Current,cn=Connections,cn=Monitor'
+        assertEquals(45.0, registry.getSampleValue("_Current"), .001);
+    }
 
     @Test
     public void testLabelsAreSet() throws Exception {
@@ -219,7 +240,8 @@ public class LdapCollectorTest {
         // Test 'cn=Backend 1,cn=Backends,cn=Monitor'
         assertNull(registry.getSampleValue("_Backend_1_Backends"));
         // Test 'cn=Max,cn=Threads,cn=Monitor'
-        assertEquals(16.0, registry.getSampleValue("_Max_Threads"), .001);
+        assertEquals(16.0, registry.getSampleValue("_Max_Threads"), .001); 
+
     }
 
     @Test
@@ -251,7 +273,22 @@ public class LdapCollectorTest {
         assertNotNull(registry.getSampleValue("_Max_File_Descriptors_Connections"));
         
     }
+*/
+    @Test
+    public void testExtraAttrsToReturn() throws Exception {
+        LdapCollector lc = new LdapCollector("\n---\nusername: cn=Directory Manager\npassword: password\nextraAttributesToReturn:\n- olmReceivedOps\n- olmForwardedOps\n- olmRejectedOps\n- olmCompletedOps\n- olmFailedOps\n- olmIncomingConnections\n- olmOutgoingConnections".replace('`','"')).register(registry);
+        
+        // Test 'cn=Load Balancer,cn=Backends,cn=Monitor'
+        assertEquals(3.0, registry.getSampleValue("_Load_Balancer_Backends_olmIncomingConnections"), .001);
 
+        // Test 'cn=Bind,cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor'
+        assertEquals(269.0, registry.getSampleValue("_Bind_Operations_Load_Balancer_Backends_olmReceivedOps"), .001);
+
+        // Test also that the default attrs. to return are returned
+        // Test 'cn=Bind,cn=Operations_monitorOpInitiated'
+        assertEquals(3960532, registry.getSampleValue("_Bind_Operations_monitorOpInitiated"), .001);
+    }
+/*
     @Test
     public void testDefaultExportLowercaseOutputName() throws Exception {
         LdapCollector lc = new LdapCollector("---\nusername: cn=Directory Manager\npassword: password\nlowercaseOutputName: true").register(registry);
@@ -303,4 +340,5 @@ public class LdapCollectorTest {
         Thread.sleep(2000);
         assertEquals(45.0, registry.getSampleValue("_Current_Connections"), .001);
     }    
+*/    
 }

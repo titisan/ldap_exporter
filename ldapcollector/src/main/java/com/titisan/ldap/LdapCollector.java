@@ -50,10 +50,12 @@ public class LdapCollector extends Collector implements Collector.Describable {
       String ldapUrl = "ldap://127.0.0.1:389"; //default ldap URL if not provided
       String username = "";
       String password = "";
+      String baseDN = "cn=Monitor"; //default baseDN
       boolean lowercaseOutputName;
       boolean lowercaseOutputLabelNames;
       List<String> whitelistEntryNames = new ArrayList<String>();
       List<String> blacklistEntryNames = new ArrayList<String>();
+      List<String> extraAttrsToReturn = new ArrayList<String>();
       ArrayList<Rule> rules = new ArrayList<Rule>();
       long lastUpdate = 0L;
     }
@@ -120,6 +122,11 @@ public class LdapCollector extends Collector implements Collector.Describable {
         if (yamlConfig.containsKey("password")) {
           cfg.password = (String)yamlConfig.get("password");
         }
+        
+        //baseDN is optional, if not present default is "cn=Monitor"
+        if (yamlConfig.containsKey("baseDN")) {
+          cfg.baseDN = (String)yamlConfig.get("baseDN");
+        }
       
         if (yamlConfig.containsKey("lowercaseOutputName")) {
           cfg.lowercaseOutputName = (Boolean)yamlConfig.get("lowercaseOutputName");
@@ -142,6 +149,13 @@ public class LdapCollector extends Collector implements Collector.Describable {
             cfg.blacklistEntryNames.add(name);
           }
         }
+
+        if (yamlConfig.containsKey("extraAttributesToReturn")) {
+         List<String> names = (List<String>) yamlConfig.get("extraAttributesToReturn");
+         for (String name : names) {
+           cfg.extraAttrsToReturn.add(name);
+         }
+       }
 
         if (yamlConfig.containsKey("rules")) {
           List<Map<String,Object>> configRules = (List<Map<String,Object>>) yamlConfig.get("rules");
@@ -356,7 +370,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
       }
 
       Receiver receiver = new Receiver();
-      LdapScraper scraper = new LdapScraper(config.ldapUrl, config.username, config.password, config.whitelistEntryNames, config.blacklistEntryNames, receiver);
+      LdapScraper scraper = new LdapScraper(config.ldapUrl, config.username, config.password, config.baseDN, config.whitelistEntryNames, config.blacklistEntryNames, config.extraAttrsToReturn, receiver);
       long start = System.nanoTime();
       double error = 0;
       if ((config.startDelaySeconds > 0) &&

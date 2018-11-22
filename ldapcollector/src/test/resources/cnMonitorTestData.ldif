@@ -3,8 +3,7 @@ objectClass: monitorServer
 cn: Monitor
 description: This subtree contains monitoring/managing objects.
 description: This object contains information about this server.
-description: Most of the information is held in operational attributes, which mu
- st be explicitly requested.
+description: Most of the information is held in operational attributes, which must be explicitly requested.
 createTimestamp: 20170924045949Z
 creatorsName: 
 entryDN: cn=Monitor
@@ -2198,3 +2197,146 @@ monitorCounter: 0
 structuralObjectClass: monitorCounterObject
 subschemaSubentry: cn=Subschema
 
+dn: cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancer
+olmIncomingConnections: 3
+olmOutgoingConnections: 0
+entryDN: cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: monitorContainer
+entryDN: cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=Connection 564,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerConnection
+entryDN: cn=Connection 564,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: FALSE
+
+dn: cn=Connection 565,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerConnection
+entryDN: cn=Connection 565,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: FALSE
+
+dn: cn=Connection 570,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerConnection
+entryDN: cn=Connection 570,cn=Incoming Connections,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: FALSE
+
+dn: cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: monitorContainer
+entryDN: cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=Bind,cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerOperation
+olmReceivedOps: 269
+olmForwardedOps: 267
+olmRejectedOps: 2
+olmCompletedOps: 267
+olmFailedOps: 0
+entryDN: cn=Bind,cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: FALSE
+
+dn: cn=Other,cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerOperation
+olmReceivedOps: 2234
+olmForwardedOps: 2114
+olmRejectedOps: 0
+olmCompletedOps: 2114
+olmFailedOps: 0
+entryDN: cn=Other,cn=Operations,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: FALSE
+
+dn: cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: monitorContainer
+entryDN: cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 1,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.3:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 397
+olmCompletedOps: 397
+olmFailedOps: 0
+entryDN: cn=server 1,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 2,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.4:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 397
+olmCompletedOps: 397
+olmFailedOps: 0
+entryDN: cn=server 2,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 3,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.5:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 397
+olmCompletedOps: 397
+olmFailedOps: 0
+entryDN: cn=server 3,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 4,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.6:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 397
+olmCompletedOps: 397
+olmFailedOps: 0
+entryDN: cn=server 4,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 5,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.7:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 397
+olmCompletedOps: 397
+olmFailedOps: 0
+entryDN: cn=server 5,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
+
+dn: cn=server 6,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+structuralObjectClass: olmBalancerServer
+olmServerURI: ldap://10.22.0.8:390
+olmActiveConnections: 0
+olmPendingConnections: 0
+olmPendingOps: 0
+olmReceivedOps: 396
+olmCompletedOps: 396
+olmFailedOps: 0
+entryDN: cn=server 6,cn=Backend Servers,cn=Load Balancer,cn=Backends,cn=Monitor
+subschemaSubentry: cn=Subschema
+hasSubordinates: TRUE
