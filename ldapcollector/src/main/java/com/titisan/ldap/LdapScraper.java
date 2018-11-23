@@ -21,9 +21,6 @@ import javax.naming.directory.SearchResult;
 
 public class LdapScraper {
     private static final String[] defatulAttributesToReturn= {"monitorCounter", "monitorOpInitiated", "monitorOpCompleted", "monitoredInfo" };
-//                                                       "olmReceivedOps", "olmForwardedOps", "olmRejectedOps", "olmCompletedOps", 
-//                                                       "olmFailedOps", "olmIncomingConnections", "olmOutgoingConnections"
-
     private static final Logger logger = Logger.getLogger(LdapScraper.class.getName());;
     
     public static interface LdapReceiver {
