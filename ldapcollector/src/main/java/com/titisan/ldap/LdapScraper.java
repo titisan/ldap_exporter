@@ -108,11 +108,7 @@ public class LdapScraper {
                 filterStr = filter.toString();
             }
              else {
-<<<<<<< HEAD
                 filterStr = "(objectClass=*)";
-=======
-                filterStr = new String("(|(objectClass=*) (structuralObjectClass=*))");
->>>>>>> 5985369d98d0d7e48ef5fbdedd0082edb537d104
             }
 
             long start = System.nanoTime();
