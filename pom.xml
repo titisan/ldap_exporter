@@ -4,11 +4,7 @@
 
   <groupId>com.github.titisan</groupId>
   <artifactId>parent</artifactId>
-<<<<<<< HEAD
   <version>0.2.1</version>
-=======
-  <version>0.3.0</version>
->>>>>>> 5985369d98d0d7e48ef5fbdedd0082edb537d104
   <description>
     See https://github.com/titisan/ldap_exporter
   </description>
