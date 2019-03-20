@@ -4,7 +4,11 @@
   <parent>
     <groupId>com.github.titisan</groupId>
     <artifactId>parent</artifactId>
+<<<<<<< HEAD
     <version>0.2.1</version>
+=======
+    <version>0.3.0</version>
+>>>>>>> 5985369d98d0d7e48ef5fbdedd0082edb537d104
   </parent>
 
   <!-- <groupId>com.titisan.ldap</groupId> -->
@@ -35,7 +39,7 @@
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
-      <version>4.0.3</version>
+      <version>4.0.9</version>
       <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->

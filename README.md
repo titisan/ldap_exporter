@@ -19,12 +19,14 @@ The configuration is in YAML. An example with all possible options:
 ---
 startDelaySeconds: 0
 ldapUrl: ldap://127.0.0.1:1234
+baseDN: cn=Monitor
 userName: cn=Directory Manager
 password: password
 lowercaseOutputName: false
 lowercaseOutputLabelNames: false
 whitelistEntryNames: ["entryDN=cn=Current,cn=Connections,cn=Monitor"]
 blacklistEntryNames: ["entryDN=cn=Total,cn=Connections,cn=Monitor"]
+extraAttributesToReturn: [monitorConnectionOpsCompleted]
 rules:
   - pattern: 'cn=Bytes,cn=Statistics,cn=Monitor'
     name: num_bytes
@@ -39,12 +41,14 @@ Name     | Description
 ---------|------------
 startDelaySeconds | start delay before serving requests. Any requests within the delay period will result in an empty metrics set.
 ldapUrl  | The full LDAP URL of the LDAP directory server to connect to. Defaults to 'ldap://127.0.0.1:389'
+baseDN   | The LDAP Distinguish Name (DN) to be used as the starting point for the search. Defaults to 'cn=Monitor'
 username | The username to be used in LDAP authentication.
 password | The password to be used in LDAP authentication.
 lowercaseOutputName | Lowercase the output metric name. Applies to default format and `name`. Defaults to false.
 lowercaseOutputLabelNames | Lowercase the output metric label names. Applies to default format and `labels`. Defaults to false.
-whitelistEntryNames | A list of [LDAP attributes](https://tools.ietf.org/html/rfc4512#section-2.5) to query. The list is used in the LDAP search filter. Defaults to all "(objectClass=*)".
-blacklistEntryNames | A list of [LDAP attributes](https://tools.ietf.org/html/rfc4512#section-2.5) to not query. Takes precedence over `whitelistObjectNames`. Defaults to none.
+whitelistEntryNames | A list of [LDAP entries](https://tools.ietf.org/html/rfc4512#section-2.3) to query. The list is used in the LDAP search filter. Defaults to all "(objectClass=*)".
+blacklistEntryNames | A list of [LDAP entries](https://tools.ietf.org/html/rfc4512#section-2.3) to not query. Takes precedence over `whitelistObjectNames`. Defaults to none.
+extraAttributesToReturn | Extra attributes to return, by default only `monitorCounter`, `monitorOpInitiated`, `monitorOpCompleted` and `monitoredInfo` attributes are used to get metrics.
 rules    | A list of rules to apply in order, processing stops at the first matching rule. Attributes that aren't matched aren't collected. If not specified, defaults to collecting everything in the default format.
 pattern  | Regex pattern to match against each LDAP entry. The pattern is not anchored. Capture groups can be used in other options. Defaults to matching everything.
 name     | The metric name to set. Capture groups from the `pattern` can be used. If not specified, the default format will be used. If it evaluates to empty, processing of this attribute stops with no output.
@@ -62,7 +66,7 @@ A minimal config is `---`, which will connect using anonymous authentication to 
 ### Pattern input
 The format of the input matches against the pattern is "LDAP entry Dn[_attrname]"
 
-When the LDAP entry contains more than one of these attributes `monitorCounter`, `monitorOpInitiated`, `monitorOpCompleted` and `monitoredInfo` the attribute name is appended to the LDAP entry name. 
+When the LDAP entry contains more than one of these attributes `monitorCounter`, `monitorOpInitiated`, `monitorOpCompleted`, `monitoredInfo` and the attributes indicated by `extraAttributesToReturn` the attribute name is appended to the LDAP entry name. 
 
 Examples:
 ```

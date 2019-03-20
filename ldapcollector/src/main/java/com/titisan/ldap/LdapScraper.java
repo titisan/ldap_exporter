@@ -1,6 +1,7 @@
 package com.titisan.ldap;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +20,7 @@ import javax.naming.directory.SearchResult;
 
 
 public class LdapScraper {
-    private static final String[] attributesToReturn= {"monitorCounter", "monitorOpInitiated", "monitorOpCompleted", "monitoredInfo"};
-    private static final String baseDn = "cn=Monitor";
+    private static final String[] defatulAttributesToReturn= {"monitorCounter", "monitorOpInitiated", "monitorOpCompleted", "monitoredInfo" };
     private static final Logger logger = Logger.getLogger(LdapScraper.class.getName());;
     
     public static interface LdapReceiver {
@@ -33,17 +33,20 @@ public class LdapScraper {
 
     private LdapReceiver receiver;
     private String ldapUrl;
+    private String baseDn;
     private String username;
     private String password;
-    private List<String> whitelistEntryNames, blacklistEntryNames;
+    private List<String> whitelistEntryNames, blacklistEntryNames, extraAttrsToReturn;
 
-    public LdapScraper(String ldapUrl, String username, String password, List<String> whitelistEntryNames, List<String> blacklistEntryNames, LdapReceiver receiver) {
+    public LdapScraper(String ldapUrl, String username, String password, String baseDN, List<String> whitelistEntryNames, List<String> blacklistEntryNames, List<String> extraAttrsToReturn, LdapReceiver receiver) {
         this.ldapUrl = ldapUrl;
         this.receiver = receiver;
         this.username = username;
         this.password = password;
+        this.baseDn = baseDN;
         this.whitelistEntryNames = whitelistEntryNames;
         this.blacklistEntryNames = blacklistEntryNames;
+        this.extraAttrsToReturn = extraAttrsToReturn;
     }
 
     /**
@@ -70,7 +73,17 @@ public class LdapScraper {
             dirConn.reconnect(connCtls);
             SearchControls ctls = new SearchControls();
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            ctls.setReturningAttributes(attributesToReturn);
+            try {
+               List<String> attributesToReturn = new ArrayList<String>( Arrays.asList(defatulAttributesToReturn) );
+               for (String extraAttr : extraAttrsToReturn) {
+                  // Add configured extra attributes to return, if any.
+                  attributesToReturn.add(extraAttr);
+               }
+               ctls.setReturningAttributes(attributesToReturn.toArray(new String[] {} ));
+            } catch (Exception e) {
+               logger.log(Level.FINE,"Error in doScrape adding extra attributes to return." + e);
+            }
+           
             String filterStr = null;
             StringBuilder filter = new StringBuilder();
             if (whitelistEntryNames.size() > 0 || blacklistEntryNames.size() > 0) {
@@ -95,12 +108,16 @@ public class LdapScraper {
                 filterStr = filter.toString();
             }
              else {
+<<<<<<< HEAD
                 filterStr = "(objectClass=*)";
+=======
+                filterStr = new String("(|(objectClass=*) (structuralObjectClass=*))");
+>>>>>>> 5985369d98d0d7e48ef5fbdedd0082edb537d104
             }
 
             long start = System.nanoTime();
             NamingEnumeration<SearchResult> searchResult = dirConn.search(baseDn, filterStr, ctls);
-            logger.fine("TIME: " + (System.nanoTime() - start) + " ns for reading cn=Monitor data");
+            logger.fine("TIME: " + (System.nanoTime() - start) + " ns for reading " + baseDn + " data");
             scrapeBackMonitorData(searchResult);
         } finally {
           if (dirConn != null) {
@@ -125,7 +142,7 @@ public class LdapScraper {
                     // When there are more than one attr in a LDAP entry the recorded entry name is the DN + attr. name
                     // For example the monitorOpInitiated and monitorOpCompleted attrs.
                     // There might be entries in the result set that do not contain any of the attributes to return 
-                    if (Arrays.asList(attributesToReturn).contains(attr.getID())) {
+                    //if (Arrays.asList(attributesToReturn).contains(attr.getID())) {
                         String entryName = attrs.size() == 1 ? sr.getName() : sr.getName() + "_" + attr.getID();
                         try {
                            Double value = Double.valueOf((String)attr.get());
@@ -134,9 +151,9 @@ public class LdapScraper {
                                                    " attr. name: " + attr.getID() + 
                                                    " value: " + attr.get().toString()); 
                         } catch (NumberFormatException numformatexcep) {
-
+                           //logger.log(Level.FINE,"not a numeric metric: " + entryName);
                         }
-                    }
+                    //}
                 }
                 num_entries += 1;
             }
@@ -164,15 +181,15 @@ public class LdapScraper {
      * Convenience function to run standalone.
      */
     public static void main(String[] args) throws Exception {
-        // arguments ldapUrl username password
-        if (args.length >= 3){
-                new LdapScraper(args[0], args[1], args[2],  new LinkedList<String>(), new LinkedList<String>(), new StdoutWriter()).doScrape();
+        // arguments ldapUrl username password baseDN
+        if (args.length >= 4){
+                new LdapScraper(args[0], args[1], args[2],  args[3], new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>(), new StdoutWriter()).doScrape();
             }
         else if (args.length > 0){
-            new LdapScraper(args[0], "", "",  new LinkedList<String>(), new LinkedList<String>(), new StdoutWriter()).doScrape();
+            new LdapScraper(args[0], "", "",  "cn=Monitor", new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>(),new StdoutWriter()).doScrape();
         }
         else {
-            new LdapScraper("ldap://127.0.0.1:389", "", "",  new LinkedList<String>(), new LinkedList<String>(), new StdoutWriter()).doScrape();
+            new LdapScraper("ldap://127.0.0.1:389", "", "",  "cn=Monitor",new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>(),new StdoutWriter()).doScrape();
         }
     }
 }
