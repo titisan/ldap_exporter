@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,8 +65,21 @@ public class LdapCollector extends Collector implements Collector.Describable {
 
     public LdapCollector(File in) throws IOException, MalformedObjectNameException {
         configFile = in;
-        config = loadConfig((Map<String, Object>)new Yaml().load(new FileReader(in)));
-        config.lastUpdate = configFile.lastModified();
+        FileReader F_reader = null;
+        try {
+          F_reader = new FileReader(in); 
+          config = loadConfig((Map<String, Object>) new Yaml().load(F_reader));
+          config.lastUpdate = configFile.lastModified();
+        } catch (IOException  e) {
+          LOGGER.severe("Configuration load failed: " + e.toString());
+        } catch (MalformedObjectNameException e) {
+          LOGGER.severe("Configuration load failed: " + e.toString());
+        }
+        finally {
+          if (F_reader != null)  {
+            F_reader.close();
+          }
+        }
     }
 
     public LdapCollector(String yamlConfig) throws MalformedObjectNameException {
@@ -268,7 +282,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
             } 
           }
 
-          Number value;
+          Number value = Double.valueOf(0.0);
           if (rule.value != null && !rule.value.isEmpty()) {
             String val = matcher.replaceAll(rule.value);
 
@@ -279,14 +293,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
               return;
             }
           }
-          if (counterValue instanceof Number) {
-            value = ((Number)counterValue).doubleValue() * rule.valueFactor;
-          } /* else if (counterValue.intValue() == 1 || counterValue.intValue() == 0) {
-            value = (Boolean)counterValue.intValue();
-          }  */else {
-            LOGGER.fine("Ignoring unsupported entry: " + entryName + "_" + attrName + ": " + counterValue);
-            return;
-          }
+          value = ((Number)counterValue).doubleValue() * rule.valueFactor;
 
           // If there's no name provided, use default export format.
           if (rule.name == null) {
