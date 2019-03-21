@@ -75,7 +75,7 @@ public class LdapCollectorTest {
     public void setUp() throws Exception {
       registry = new CollectorRegistry();
     }
-/*
+
     @Test(expected=IllegalArgumentException.class)
     public void testRulesMustHaveNameWithHelp() throws Exception {
         LdapCollector lc = new LdapCollector("---\nrules:\n- help: foo");
@@ -273,7 +273,6 @@ public class LdapCollectorTest {
         assertNotNull(registry.getSampleValue("_Max_File_Descriptors_Connections"));
         
     }
-*/
     @Test
     public void testExtraAttrsToReturn() throws Exception {
         LdapCollector lc = new LdapCollector("\n---\nusername: cn=Directory Manager\npassword: password\nextraAttributesToReturn:\n- olmReceivedOps\n- olmForwardedOps\n- olmRejectedOps\n- olmCompletedOps\n- olmFailedOps\n- olmIncomingConnections\n- olmOutgoingConnections".replace('`','"')).register(registry);
@@ -288,7 +287,6 @@ public class LdapCollectorTest {
         // Test 'cn=Bind,cn=Operations_monitorOpInitiated'
         assertEquals(3960532, registry.getSampleValue("_Bind_Operations_monitorOpInitiated"), .001);
     }
-/*
     @Test
     public void testDefaultExportLowercaseOutputName() throws Exception {
         LdapCollector lc = new LdapCollector("---\nusername: cn=Directory Manager\npassword: password\nlowercaseOutputName: true").register(registry);
@@ -340,5 +338,5 @@ public class LdapCollectorTest {
         Thread.sleep(2000);
         assertEquals(45.0, registry.getSampleValue("_Current_Connections"), .001);
     }    
-*/    
+    
 }

@@ -4,7 +4,7 @@
 
   <groupId>com.github.titisan</groupId>
   <artifactId>parent</artifactId>
-  <version>0.2.1</version>
+  <version>0.3.1</version>
   <description>
     See https://github.com/titisan/ldap_exporter
   </description>
@@ -46,8 +46,7 @@
   <scm>
       <connection>scm:git:git@github.com:titisan/ldap_exporter.git</connection>
       <developerConnection>scm:git:git@github.com:titisan/ldap_exporter.git</developerConnection>
-      <url>git@github.com:titisan/ldap_exporter.git</url>
-      <tag>HEAD</tag>
+      <url>https://github.com/titisan/ldap_exporter/tree/master</url>
   </scm>
 
   <build>
@@ -61,6 +60,7 @@
                <serverId>ossrh</serverId>
                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                <autoReleaseAfterClose>true</autoReleaseAfterClose>
+               <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
             </configuration>
          </plugin>
 <!--           <plugin>
@@ -102,7 +102,7 @@
 			         <plugin>
                       <groupId>org.apache.maven.plugins</groupId>
                       <artifactId>maven-gpg-plugin</artifactId>
-                      <version>1.5</version>
+                      <version>1.6</version>
                       <executions>
                           <execution>
                               <id>sign-artifacts</id>
