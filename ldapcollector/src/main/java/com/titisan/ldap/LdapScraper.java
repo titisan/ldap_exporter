@@ -115,6 +115,7 @@ public class LdapScraper {
             NamingEnumeration<SearchResult> searchResult = dirConn.search(baseDn, filterStr, ctls);
             logger.fine("TIME: " + (System.nanoTime() - start) + " ns for reading " + baseDn + " data");
             scrapeBackMonitorData(searchResult);
+            searchResult.close();
         } finally {
           if (dirConn != null) {
             dirConn.close();
