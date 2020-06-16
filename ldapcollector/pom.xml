@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.github.titisan</groupId>
     <artifactId>parent</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
   </parent>
 
   <!-- <groupId>com.titisan.ldap</groupId> -->
