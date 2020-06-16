@@ -70,7 +70,7 @@ public class LdapScraper {
             }
             Control[] connCtls = new Control[0];
             dirConn = new InitialLdapContext(environment, connCtls);
-            dirConn.reconnect(connCtls);
+            //dirConn.reconnect(connCtls);
             SearchControls ctls = new SearchControls();
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             try {
