@@ -66,7 +66,7 @@ public class LdapCollectorTest {
         
     }
     @AfterClass
-    public static void onTimeTearDown() throws Exception {
+    public static void oneTimeTearDown() throws Exception {
         if (server != null)
             server.shutDown(true); 
     }
@@ -205,6 +205,16 @@ public class LdapCollectorTest {
               "\n---\nusername: cn=Directory Manager\npassword: password\nrules:\n- pattern: `.+`\n  name: foo\n- pattern: `.+`\n  name: bar".replace('`','"')).register(registry);
       assertNotNull(registry.getSampleValue("foo"));
       assertNull(registry.getSampleValue("bar"));
+    }
+
+    @Test
+    public void doNotStopIfContinueIsSet() throws Exception {
+      LdapCollector lc = new LdapCollector(
+        "\n---\nusername: cn=Directory Manager\npassword: password\nrules:\n- pattern: `cn=Total,cn=Connections`\n  name: Connections_Total\n  continue: true\n- pattern: `cn=Total,cn=Connections`\n  name: SecondConnections_Total".replace('`','"')).register(registry);
+      assertNotNull(registry.getSampleValue("Connections_Total"));
+      assertNotNull(registry.getSampleValue("SecondConnections_Total"));
+      assertEquals(15931071, registry.getSampleValue("Connections_Total", new String[]{}, new String[]{}), .001);
+      assertEquals(15931071, registry.getSampleValue("SecondConnections_Total", new String[]{}, new String[]{}), .001);
     }
 
     @Test

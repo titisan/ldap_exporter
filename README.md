@@ -49,7 +49,7 @@ lowercaseOutputLabelNames | Lowercase the output metric label names. Applies to 
 whitelistEntryNames | A list of [LDAP entries](https://tools.ietf.org/html/rfc4512#section-2.3) to query. The list is used in the LDAP search filter. Defaults to all "(objectClass=*)".
 blacklistEntryNames | A list of [LDAP entries](https://tools.ietf.org/html/rfc4512#section-2.3) to not query. Takes precedence over `whitelistObjectNames`. Defaults to none.
 extraAttributesToReturn | Extra attributes to return, by default only `monitorCounter`, `monitorOpInitiated`, `monitorOpCompleted` and `monitoredInfo` attributes are used to get metrics.
-rules    | A list of rules to apply in order, processing stops at the first matching rule. Attributes that aren't matched aren't collected. If not specified, defaults to collecting everything in the default format.
+rules    | A list of rules to apply in order, processing stops at the first matching rule (see continue option). Attributes that aren't matched aren't collected. If not specified, defaults to collecting everything in the default format.
 pattern  | Regex pattern to match against each LDAP entry. The pattern is not anchored. Capture groups can be used in other options. Defaults to matching everything.
 name     | The metric name to set. Capture groups from the `pattern` can be used. If not specified, the default format will be used. If it evaluates to empty, processing of this attribute stops with no output.
 value    | Value for the metric. Static values and capture groups from the `pattern` can be used. If not specified the scraped LDAP entry value will be used.
@@ -57,6 +57,7 @@ valueFactor | Optional number that `value` (or the scraped LDAP entry value if `
 labels   | A map of label name to label value pairs. Capture groups from `pattern` can be used in each. `name` must be set to use this. Empty names and values are ignored. If not specified and the default format is not being used, no labels are set.
 help     | Help text for the metric. Capture groups from `pattern` can be used. `name` must be set to use this. Defaults to "Metric from <LDAP entryDN>_<LDAP attribute>".
 type     | The type of the metric, can be `GAUGE`, `COUNTER` or `UNTYPED`. `name` must be set to use this. Defaults to `UNTYPED`.
+continue | Indicates if processing of rules must continue if this rule matches. Defaults to false.
 
 Metric names and label names are sanitized. All characters other than `[a-zA-Z0-9:_]` are replaced with underscores,
 and adjacent underscores are collapsed, the pattern `,*cn=` is replaced by underscores. There's no limitations on label values or the help text.

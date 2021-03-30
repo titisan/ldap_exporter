@@ -42,6 +42,7 @@ public class LdapCollector extends Collector implements Collector.Describable {
       Double valueFactor = 1.0;
       String help;
       Type type = Type.UNTYPED;
+      Boolean continue_next = false;
       ArrayList<String> labelNames;
       ArrayList<String> labelValues;
     }
@@ -216,6 +217,10 @@ public class LdapCollector extends Collector implements Collector.Describable {
                 rule.labelValues.add((String)entry.getValue());
               }
             }
+            
+            if (yamlRule.containsKey("continue")) {
+              rule.continue_next = (Boolean)yamlRule.get("continue");
+            }
 
             // Validation.
             if ((rule.labelNames != null || rule.help != null) && rule.name == null) {
@@ -313,7 +318,12 @@ public class LdapCollector extends Collector implements Collector.Describable {
           if (rule.name == null) {
               //LOGGER.fine("No rule name provided, using defaultExport: " + entryName);
               defaultExport(entryName, attrName, help, value, Type.UNTYPED);
-              return;
+              if (!rule.continue_next) {
+                return;
+              } else {
+                continue;
+              }
+
           }
 
           // Matcher is set below here due to validation in the constructor.
@@ -361,7 +371,11 @@ public class LdapCollector extends Collector implements Collector.Describable {
                       " Label values: " + labelValues.toString() +
                       " help: " + help);
           addSample(new MetricFamilySamples.Sample(name, labelNames, labelValues, value.doubleValue()), rule.type, help);
-          return;
+          if (!rule.continue_next) {
+            return;
+          } else {
+            continue;
+          }
         }
       }
 
