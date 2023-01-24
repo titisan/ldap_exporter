@@ -35,7 +35,7 @@ rules:
     labels: {}
     help: "LDAP metric number of bytes sent"
     type: COUNTER
-    attrNameSnakeCase: false
+    continue: false
 ```
 Name     | Description
 ---------|------------
